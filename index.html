@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Xiuyin Li</title>
+  <meta name="description" content="Xiuyin Li (Li Xiuyin) — Master of Data Science student at HKU; research interests in reliable and self-improving LLM agents: feedback-based post-training, verifiable reward modeling, synthetic data and environment construction, and causal and uncertainty-aware evaluation." />
+  <meta name="author" content="Xiuyin Li (Li Xiuyin · 李袖印 · lixiuyin)" />
+  <link rel="canonical" href="https://lixiuyin.github.io/" />
+  <meta name="theme-color" content="#173a5e" />
+  <!-- Open Graph / social preview -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://lixiuyin.github.io/" />
+  <meta property="og:site_name" content="Xiuyin Li" />
+  <meta property="og:title" content="Xiuyin Li" />
+  <meta property="og:description" content="Master of Data Science student at HKU, with research interests in reliable and self-improving LLM agents: feedback-based post-training, verifiable reward modeling, synthetic data and environment construction, and causal and uncertainty-aware evaluation." />
+  <meta property="og:image" content="https://lixiuyin.github.io/assets/og-banner.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Xiuyin Li — Master of Data Science, HKU" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Xiuyin Li" />
+  <meta name="twitter:description" content="Master of Data Science student at The University of Hong Kong — interested in reliable and self-improving LLM agents: feedback-based post-training, verifiable reward modeling, synthetic data and environment construction, and causal and uncertainty-aware evaluation." />
+  <meta name="twitter:image" content="https://lixiuyin.github.io/assets/og-banner.jpg" />
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+  <style>
+:root {
+  --bg: #fdfdfc;
+  --fg: #222;
+  --muted: #6a6a6a;
+  --accent: #173a5e;      /* restrained academic navy */
+  --line: #e3e3df;
+  --maxw: 860px;
+}
+
+/* 李袖印 only — Source Han Serif SC (OFL), subset to these 3 glyphs (~2.6 KB) so
+   the Chinese name renders identically on every device (Mac, iPhone, …) instead
+   of each system's own serif fallback. */
+@font-face {
+  font-family: "ZhName";
+  src: url("assets/zh-name.woff2") format("woff2");
+  font-weight: 400 700;
+  font-display: swap;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  color: var(--fg);
+  background: var(--bg);
+  font-family: Georgia, "Palatino Linotype", "Book Antiqua", Palatino, "Source Serif 4", "Songti SC", serif;
+  font-size: 17px;
+  line-height: 1.65;
+}
+
+a { color: var(--accent); text-decoration: none; transition: color 0.15s ease; }
+a:hover { text-decoration: underline; }
+
+/* Keyboard focus only (not mouse clicks): a clear accent outline that stays
+   visible even on the background-less collapse toggle and beneath the navy
+   headings. Mouse users never see it; keyboard users always do. */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+main {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 32px 24px 24px;
+}
+
+/* ---------- Top nav ---------- */
+.topnav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.topnav-inner {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 11px 24px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 16px;
+}
+.topnav-name { font-weight: 700; color: var(--fg); font-size: 1rem; }
+.topnav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  font-size: 0.93rem;
+}
+/* Right cluster: the link group + the standalone theme toggle. Keeping the toggle
+   out of .topnav-links makes it read as a control, not another nav destination. */
+.topnav-right {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.topnav-links a { color: var(--fg); }
+.topnav-links a:hover { color: var(--accent); }
+.topnav-links a[aria-current] { color: var(--accent); font-weight: 700; }
+/* Theme toggle — icon button at the end of the nav links. */
+.theme-toggle {
+  font: inherit;
+  font-size: 1.05rem;
+  line-height: 1;
+  color: var(--fg);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+.theme-toggle:hover { color: var(--accent); }
+/* Swap the icon with the theme: moon in light mode (click → dark), sun in dark. */
+.theme-toggle .icon-sun { display: none; }
+:root[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+:root[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+
+/* Offset anchored jumps so the sticky bar never covers a heading.
+   This is a static no-JS fallback; the inline script refines it to the live
+   nav height, which grows when the bar wraps to two lines on small screens. */
+html { scroll-padding-top: 64px; }
+
+/* ---------- Skip link (keyboard accessibility) ---------- */
+/* Off-screen until focused, then snaps to the top-left so keyboard users can
+   bypass the sticky nav straight to the content. */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  background: var(--accent);
+  color: #fff;
+  padding: 8px 14px;
+  font-size: 0.9rem;
+  border-radius: 0 0 4px 0;
+}
+.skip-link:focus {
+  left: 0;
+  color: #fff;
+  outline: 2px solid #fff;
+  outline-offset: -2px;
+}
+
+/* ---------- Intro ---------- */
+.intro {
+  display: flex;
+  align-items: flex-end;     /* photo bottom aligns with the contact row */
+  justify-content: space-between;
+  gap: 28px;
+  margin-bottom: 8px;
+}
+.avatar {
+  width: 120px;
+  height: 168px;         /* true 1-inch ratio: 2.5cm x 3.5cm = 5:7 */
+  object-fit: cover;
+  object-position: top;  /* keep the head, crop from the bottom if needed */
+  border-radius: 4px;
+  border: 1px solid var(--line);
+  flex-shrink: 0;
+}
+.intro-text h1 {
+  margin: 0 0 4px;
+  font-size: 1.9rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+/* Native-script name beside the Latin — a touch smaller (size only; keeps the
+   inherited bold + muted gray) so 李袖印 reads as a balanced secondary form. */
+.intro-text h1 .muted { font-family: "ZhName", "Songti SC", serif; font-size: 0.80em; }
+.role { margin: 0 0 8px; font-size: 1.02rem; }
+/* Keep the institution name intact: when it doesn't fit, the whole
+   "The University of Hong Kong" wraps to the next line rather than
+   splitting mid-name. On wide screens the full role still fits on one line. */
+.role .muted { white-space: nowrap; }
+.contact { margin: 0; font-size: 0.95rem; }
+
+/* ---------- Sections ---------- */
+.bio { margin: 0 0 4px; }
+.bio p { margin: 0; }
+.bio p + p { margin-top: 8px; }
+
+section { padding: 26px 0 4px; }
+#skills p { margin: 0 0 5px; }
+
+h2 {
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 0 0 12px;
+  padding: 0 0 5px;
+  border-bottom: 1px solid var(--line);
+  position: relative;
+}
+/* Navy accent rule drawn as a pseudo-element so it hugs the heading's left edge
+   WITHOUT indenting the text — the title stays flush with the body below it. */
+h2::before {
+  content: "";
+  position: absolute;
+  left: -9px;
+  top: 0.15em;
+  bottom: 6px;
+  width: 3px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+p { margin: 0 0 10px; }
+.muted { color: var(--muted); }
+.seeking { color: var(--accent); font-weight: 700; }
+em { font-style: italic; }
+
+.entry {
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+.entry + .entry { margin-top: 18px; }
+.entry:last-child { border-bottom: 0; padding-bottom: 0; }
+.entry-title {
+  font-size: 1rem;       /* reset <h3> default (1.17em) so titles match the old <p> size */
+  line-height: inherit;
+  font-weight: 700;
+  margin: 0 0 2px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75em;
+  flex-wrap: wrap;
+}
+.entry-meta {
+  font-weight: 400;
+  font-style: italic;
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-left: auto;
+  white-space: nowrap;
+}
+.entry p:not(.entry-title) { font-size: 0.97rem; }
+/* Compact, secondary list for the trailing "Additional projects" breadth. */
+ul.more-projects { margin: 4px 0 0; padding-left: 1.15em; font-size: 0.97rem; }
+ul.more-projects li { margin-bottom: 5px; }
+/* Research Interests — annotated themes: bold theme on its own line, description beneath. */
+ul.interests { margin: 4px 0 0; padding-left: 1.15em; }
+ul.interests li { margin-bottom: 11px; }
+ul.interests li strong { display: block; color: var(--accent); margin-bottom: 2px; }
+
+/* ---------- Collapsible overflow (driven by [data-collapse-after] + JS) ---------- */
+.collapse-region {              /* animate height with no magic-number max-height */
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.28s ease;
+}
+.collapse-region > div { overflow: hidden; }
+.is-open > .collapse-region { grid-template-rows: 1fr; }
+
+.collapse-toggle {
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--accent);
+  background: none;
+  border: 0;
+  padding: 4px 0;
+  margin-top: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.collapse-toggle:hover { text-decoration: underline; }
+.collapse-toggle .chev {
+  font-size: 0.8em;
+  transition: transform 0.2s ease;
+}
+.is-open > .collapse-toggle .chev { transform: rotate(180deg); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }   /* no smooth anchor jumps for motion-sensitive users */
+  a, .collapse-toggle,
+  .collapse-region, .collapse-toggle .chev { transition: none; }
+}
+
+/* ---------- Lists ---------- */
+ul.news, ul.awards { list-style: none; padding: 0; margin: 0; }
+ul.news li, ul.awards li {
+  margin-bottom: 7px;
+  font-size: 0.97rem;
+  padding-left: 6.5em;
+  text-indent: -6.5em;
+}
+ul.awards li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75em;
+  flex-wrap: wrap;
+  padding-left: 0;
+  text-indent: 0;
+}
+.date {
+  display: inline-block;
+  width: 6em;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.85rem;
+  text-indent: 0;
+}
+
+code {
+  font-family: "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.82em;
+  background: #f1f1ee;
+  border-radius: 3px;
+  padding: 0 4px;
+}
+
+/* ---------- Footer ---------- */
+footer {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  border-top: 1px solid var(--line);
+  padding: 18px 24px 40px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 560px) {
+  main { padding: 36px 18px 16px; }
+
+  /* Stack the intro vertically and centre it — without this, the column layout
+     inherits the desktop `align-items: flex-end` and pins the photo (and text)
+     to the right edge. */
+  .intro { flex-direction: column; align-items: center; text-align: center; gap: 16px; }
+  .avatar { width: 110px; height: 154px; }
+
+  /* Stack each entry's title above its role/date meta, left-aligned, so the
+     meta no longer floats to the right edge on its own line once the title
+     wraps on a narrow screen. */
+  .entry-title { flex-direction: column; align-items: flex-start; gap: 0; }
+  .entry-meta { margin-left: 0; }
+  ul.awards li { flex-direction: column; align-items: flex-start; gap: 0; }
+
+  ul.news li, ul.awards li { padding-left: 0; text-indent: 0; }
+  .date { display: block; width: auto; }
+}
+
+/* ---------- Dark mode (manual toggle; follows the OS on first visit) ---------- */
+/* Driven by [data-theme="dark"] on <html>. An inline head script sets it from the
+   saved choice (or the OS setting on first visit) before first paint; the nav
+   button flips + persists it. Default — no JS / no attribute — is light. */
+:root[data-theme="dark"] {
+  --bg: #1b1e24;
+  --fg: #d9d5cc;
+  --muted: #a8a298;     /* lifted from #9b968d for comfort; still ~6.8:1 on the dark ground */
+  --accent: #93b4f0;     /* lighter blue: the navy is invisible on a dark ground */
+  --line: #33373e;
+}
+:root[data-theme="dark"] code { background: #2a2e35; }
+:root[data-theme="dark"] .skip-link,
+:root[data-theme="dark"] .skip-link:focus { color: #1b1e24; }   /* dark text on the now-light accent */
+
+/* ---------- Print ---------- */
+/* Academics and committees often save the page to PDF. The most important fix:
+   expand the JS-collapsed project entries (otherwise only the top three print
+   and the rest are lost), drop the sticky nav and its toggle, and strip the
+   photo border so the printed page reads cleanly. */
+@media print {
+  :root, :root[data-theme] { --bg: #fff; --fg: #000; --muted: #444; --accent: #173a5e; --line: #999; }
+  .topnav { display: none; }
+  .collapse-toggle { display: none; }
+  .collapse-region { grid-template-rows: 1fr !important; }
+  .collapse-region > div { overflow: visible !important; }
+  .avatar { border: 0; }
+
+  body { background: #fff; font-size: 11pt; line-height: 1.4; color: #000; }
+  main { padding: 0; max-width: none; }
+  footer { padding: 12pt 0 0; border-color: #999; }
+  h2 { page-break-after: avoid; }
+  .entry { page-break-inside: avoid; }
+}
+  </style>
+  <script>
+    // Set the theme before first paint to avoid a flash: saved choice, else OS setting.
+    (function () {
+      try {
+        var saved = localStorage.getItem('theme');
+        var sysDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var theme = saved || (sysDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+        var tc = document.querySelector('meta[name="theme-color"]');
+        if (tc) tc.setAttribute('content', theme === 'dark' ? '#1b1e24' : '#173a5e');
+      } catch (e) { /* localStorage blocked (private mode) — stay light, the default */ }
+    })();
+  </script>
+  <script src="main.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Xiuyin Li",
+    "alternateName": ["Li Xiuyin", "李袖印", "lixiuyin"],
+    "url": "https://lixiuyin.github.io/",
+    "description": "Master of Data Science student at the University of Hong Kong, with research interests in reliable and self-improving LLM agents: feedback-based post-training, verifiable reward modeling, synthetic data and environment construction, and causal and uncertainty-aware evaluation.",
+    "image": "https://lixiuyin.github.io/assets/photo.jpg",
+    "jobTitle": "Master of Data Science student",
+    "affiliation": { "@type": "CollegeOrUniversity", "name": "The University of Hong Kong" },
+    "alumniOf": { "@type": "CollegeOrUniversity", "name": "Shandong University" },
+    "knowsAbout": ["Reliable and self-improving LLM agents", "Feedback-based post-training and verifiable reward modeling", "Synthetic data and environment construction for verifiable training", "Causal and uncertainty-aware evaluation of LLM capabilities"],
+    "sameAs": [
+      "https://github.com/lixiuyin",
+      "https://linkedin.com/in/xiuyin-li-727009392"
+    ]
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#top">Skip to content</a>
+  <nav class="topnav">
+    <div class="topnav-inner">
+      <a class="topnav-name" href="#top">Xiuyin Li</a>
+      <div class="topnav-right">
+        <div class="topnav-links">
+          <a href="#research">Research</a>
+          <a href="#projects">Projects</a>
+          <a href="#education">Education</a>
+          <a href="assets/CV.pdf" target="_blank" rel="noopener noreferrer">CV</a>
+        </div>
+        <button class="theme-toggle" type="button" aria-label="Switch to dark theme" aria-pressed="false">
+          <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- ===== Intro ===== -->
+    <header class="intro" id="top">
+      <div class="intro-text">
+        <h1>Xiuyin Li <span class="muted" lang="zh-Hans">李袖印</span></h1>
+        <p class="role">Master of Data Science student, <span class="muted">The University of Hong Kong</span></p>
+        <p class="contact">
+          <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#120;&#105;&#117;&#121;&#105;&#110;&#108;&#105;&#50;&#54;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">Email</a> &middot;
+          <a href="assets/CV.pdf" target="_blank" rel="noopener noreferrer">CV</a> &middot;
+          <a href="https://github.com/lixiuyin" target="_blank" rel="noopener noreferrer">GitHub</a> &middot;
+          <a href="https://linkedin.com/in/xiuyin-li-727009392" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          <!-- Add when available: Google Scholar, ORCID -->
+        </p>
+      </div>
+      <img class="avatar" src="assets/photo.jpg" alt="Xiuyin Li" width="120" height="168" />
+    </header>
+
+    <section class="bio">
+      <p>
+        I am a graduate student in Data Science at The University of Hong Kong, building on an
+        undergraduate background in Statistics with a minor in Computer Science from Shandong University.
+        My research interests center on <strong>reliable and self-improving LLM agents</strong>
+        &mdash; developing methods that help agentic systems learn from feedback and self-correct,
+        while keeping that reliability measurable and verifiable over long horizons.
+      </p>
+      <p class="seeking">I am seeking research assistant opportunities as a step toward a PhD in these areas.</p>
+    </section>
+
+    <section id="interests" aria-labelledby="interests-heading">
+      <h2 id="interests-heading">Research Interests</h2>
+      <ul class="interests">
+        <li>
+          <strong>Reliable and self-improving LLM agents</strong>
+          agents that improve through structured feedback over long horizons, where the hard
+          part is credit assignment and error accumulation across many steps.
+        </li>
+        <li>
+          <strong>Feedback-based post-training and verifiable reward modeling</strong>
+          RL and preference-optimization methods such as PPO, GRPO, and DPO, and process-level reward models
+          that give dense, less hackable training signals beyond final-answer supervision &mdash; and the
+          conditions under which such training improves held-out capability rather than only the training reward.
+        </li>
+        <li>
+          <strong>Synthetic data and environment construction for verifiable training</strong>
+          synthesizing structured tasks, reasoning traces, and interactive environments
+          that yield scalable, rule-based reward signals for agent post-training.
+        </li>
+        <li>
+          <strong>Causal and uncertainty-aware evaluation of LLM capabilities</strong>
+          using causal inference to separate genuine capability from spurious correlations and
+          benchmark artifacts, and treating benchmark scores as estimates with confidence
+          intervals, not point estimates alone.
+        </li>
+      </ul>
+    </section>
+
+    <section id="publications" aria-labelledby="publications-heading">
+      <h2 id="publications-heading">Publications</h2>
+      <p class="muted">No publications yet &mdash; working toward my first.</p>
+      <!-- When published, replace the line above with, e.g.:
+      <ul class="publications">
+        <li><span class="date">Mon 2026</span> Authors. Title. Venue, Year.</li>
+      </ul>
+      -->
+    </section>
+
+    <section id="news" aria-labelledby="news-heading">
+      <h2 id="news-heading">News</h2>
+      <ul class="news">
+        <li><span class="date">May 2026</span> Finished my coursework for the Master of Data Science at The University of Hong Kong.</li>
+      </ul>
+    </section>
+
+    <section id="research" aria-labelledby="research-heading">
+      <h2 id="research-heading">Research</h2>
+      <div class="entry">
+        <h3 class="entry-title">
+          <a href="https://github.com/lixiuyin/em-mcem-treg-mixed-models" target="_blank" rel="noopener noreferrer">EM and MCEM for Parameter Estimation in Regression Models</a>
+          <span class="entry-meta">B.S. Thesis &middot; May 2025</span>
+        </h3>
+        <p>
+          Derived and implemented EM/MCEM with multicycle-ECM for Student's <em>t</em>-regression and linear
+          mixed models in R, including REML corrections that remove the small-sample downward bias in variance
+          components. Validated every estimator to machine precision against <code>lme4</code>, <code>nlme</code>,
+          and <code>optim</code> over 500-replication simulations, and applied the methods to robust facial-age
+          regression and a 60k-observation hierarchical reaction-time model.
+        </p>
+      </div>
+    </section>
+
+    <section id="projects" data-collapse-after="3" data-collapse-noun="projects" aria-labelledby="projects-heading">
+      <h2 id="projects-heading">Selected Projects</h2>
+      <p class="muted">Served as the project lead and primary contributor on every team project, with several others completed independently as the sole author.</p>
+
+      <div class="entry">
+        <h3 class="entry-title">
+          <a href="https://github.com/lixiuyin/meeting-agent" target="_blank" rel="noopener noreferrer">Meeting Agent &mdash; Multimodal RAG with Long-Term Memory</a>
+          <span class="entry-meta">Project Lead &middot; Apr 2026</span>
+        </h3>
+        <p>
+          Architected the core RAG retrieval funnel &mdash; scope routing (corpus &rarr; meeting &rarr; file),
+          hybrid dense+sparse recall (Chroma + BM25/FTS5), Reciprocal Rank Fusion with per-file fair allocation,
+          anchor-based eviction for session continuity, and Cohere/BGE reranking &mdash; yielding citation-grounded,
+          traceable answers. Added a content-aware ingestion cascade with speaker-diarized ASR, plus a long-term
+          memory layer with TTL/importance-decayed facts, a knowledge graph of entities and relations, and
+          episodic cross-session summaries. Built with FastAPI and LangChain&nbsp;LCEL.
+        </p>
+      </div>
+
+      <div class="entry">
+        <h3 class="entry-title">
+          <a href="https://github.com/lixiuyin/zero-shot-cnn-textual-description-reproduction" target="_blank" rel="noopener noreferrer">Zero-Shot CNNs from Textual Descriptions &mdash; Reproduction &amp; Extension</a>
+          <span class="entry-meta">Project Lead &middot; Mar 2026</span>
+        </h3>
+        <p>
+          Reproduced <a href="https://arxiv.org/pdf/1506.00511" target="_blank" rel="noopener noreferrer">Ba et al. (ICCV 2015)</a> in PyTorch &mdash; predicting convolutional and fully-connected
+          classifier weights directly from Wikipedia text to recognize unseen classes on CUB-200-2011 and
+          Oxford Flowers (~0.71 unseen ROC-AUC), with the residual gap from the paper traced mainly to its
+          now-unavailable CUB-200-2010 benchmark. Extended it with auxiliary losses (CLIP contrastive,
+          center-alignment), modern text encoders (SBERT, CLIP), and backbones (DenseNet-121, ResNet-50)
+          &mdash; the strongest, a CLIP text encoder, reaching 0.89 unseen ROC-AUC.
+        </p>
+      </div>
+
+      <div class="entry">
+        <h3 class="entry-title">
+          <a href="https://github.com/lixiuyin/web-agent" target="_blank" rel="noopener noreferrer">Web-Agent &mdash; Autonomous VLM-Driven Browser Agent</a>
+          <span class="entry-meta">Project Lead &middot; Nov 2025</span>
+        </h3>
+        <p>
+          Built an autonomous agent that carries out natural-language web tasks by fusing a vision-language model's
+          screenshot with a DOM-to-Markdown snapshot to decide the next Playwright action. On the STAT7008A (HKU)
+          team project I led, I implemented the local/API dual-mode vLLM planner and document image extraction, and
+          independently simplified the
+          <a href="https://github.com/browser-use/browser-use" target="_blank" rel="noopener noreferrer">browser-use</a>
+          library. My solo post-course rewrite swapped the local-only stack for a provider-agnostic planner (with
+          automatic vision detection), a quality-gated OCR cascade
+          (Marker&rarr;MinerU&rarr;PaddleOCR&rarr;PyMuPDF) that resolves a figure by its real caption, and
+          four-signal loop detection. Typed, protocol-based Python package (~13.5k LOC, 50+ tools, 186 tests).
+        </p>
+      </div>
+
+      <div class="entry">
+        <h3 class="entry-title">
+          <a href="https://github.com/lixiuyin/nllb-200-distilled-1.3b-zh-en-wmt19-lora" target="_blank" rel="noopener noreferrer">NLLB-200 Chinese&rarr;English Translation &mdash; LoRA Fine-Tuning</a>
+          <span class="entry-meta">Personal &middot; Nov 2025</span>
+        </h3>
+        <p>
+          LoRA-fine-tuned Meta's NLLB-200-distilled (1.3B) for Chinese&rarr;English translation on 600k WMT19
+          sentence pairs, adapting only low-rank updates (<em>r</em>=32) on the attention and feed-forward
+          projections &mdash; trained in ~5.5 hours on a single 16&nbsp;GB GPU with bfloat16 and gradient
+          accumulation. Built a multi-stage cleaning pipeline (normalization, length/ratio filtering,
+          language-consistency checks, exact-pair deduplication) and evaluated with sacreBLEU under 5-beam
+          search, reaching 24.9 BLEU on the WMT19 test split.
+        </p>
+      </div>
+
+      <div class="entry">
+        <h3 class="entry-title">
+          <a href="https://github.com/lixiuyin/cifar100-image-classification" target="_blank" rel="noopener noreferrer">CIFAR-100 Image Classification &mdash; WideResNet from Scratch</a>
+          <span class="entry-meta">Personal &middot; Oct 2025</span>
+        </h3>
+        <p>
+          Built a WideResNet-28-10 (~36.5M parameters) from scratch in PyTorch and pushed it to 0.832 macro-F1
+          across 100 classes. Designed a two-tier augmentation strategy &mdash; semantic-aware offline transforms
+          routed by class/superclass with difficulty-scaled intensity and confusion-pair awareness, plus online
+          AutoAugment, RandomErasing, MixUp, and CutMix &mdash; combined with label smoothing, weight EMA,
+          SGD+Nesterov, and a warmup&rarr;cosine schedule, training in ~2.5 hours on one RTX 4080 Super.
+        </p>
+      </div>
+
+      <div class="entry">
+        <h3 class="entry-title">
+          <a href="https://github.com/lixiuyin/math-formula-to-latex" target="_blank" rel="noopener noreferrer">ViT Image-to-LaTeX &mdash; Math Expression Recognition</a>
+          <span class="entry-meta">Personal &middot; Jun 2025</span>
+        </h3>
+        <p>
+          Built a pure Vision Transformer encoder&ndash;decoder from scratch in PyTorch &mdash; no CNN backbone
+          or grammar rules (~7.7M parameters) &mdash; mapping formula images to LaTeX token sequences via patch
+          embeddings and an autoregressive decoder. Trained and evaluated on both printed (im2latex-100k) and
+          handwritten (MathWriting) corpora, reaching 90.1% token accuracy and 0.70 BLEU-4 (beam search) on
+          printed im2latex-100k. Studied the training dynamics in depth &mdash; finding gradient clipping
+          essential for stability, that teacher-forced token accuracy substantially overstates true
+          autoregressive generation quality, and that handwritten recognition remains markedly harder than
+          printed.
+        </p>
+      </div>
+
+      <div class="entry">
+        <h3 class="entry-title">
+          <a href="https://github.com/lixiuyin/cnn-lstm-transformer-text-classification" target="_blank" rel="noopener noreferrer">CNN, BiLSTM &amp; Transformer for Text Classification</a>
+          <span class="entry-meta">Personal &middot; May 2025</span>
+        </h3>
+        <p>
+          Derived all three architectures from first principles &mdash; the recurrent family
+          (S-RNN &rarr; LSTM &rarr; Peephole &rarr; BiLSTM) with gating and BPTT derivations, CNN inductive
+          biases, and multi-head self-attention &mdash; then benchmarked them on four datasets (IMDB, AG News,
+          BBC News, SST-5), tying the measured <em>O(n²)</em> throughput drop to a complexity analysis and
+          showing that architecture&ndash;task fit outweighs model capacity.
+        </p>
+      </div>
+
+      <div class="entry">
+        <h3 class="entry-title">
+          <a href="https://github.com/lixiuyin/library-management-system" target="_blank" rel="noopener noreferrer">Library Management System &mdash; Database &amp; Full-Stack</a>
+          <span class="entry-meta">Personal &middot; 2022&ndash;2023</span>
+        </h3>
+        <p>
+          Two implementations of the same domain: a SQL Server command-line system built around stored
+          procedures, views, and triggers for reader and administrator roles, then a full-stack web rebuild
+          with a Flask REST API, a Vue 2 + Element UI frontend, and a MySQL backend &mdash; emphasizing
+          relational schema design and separated frontend/backend architecture.
+        </p>
+      </div>
+
+      <div class="entry">
+        <h3 class="entry-title">Additional projects</h3>
+        <ul class="more-projects">
+          <li>From-scratch U-Net for image semantic segmentation &mdash; a depth study showing residual
+            blocks counter deep-network degradation and raise mIoU.</li>
+          <li>LSTM-based apple-futures price forecasting &mdash; R&sup2;&nbsp;&approx;&nbsp;0.95 on held-out
+            data, with a Random-Forest analysis of the main price drivers.</li>
+          <li>Multithreaded Java influence-maximization engine &mdash; greedy seed selection over a signed
+            independent-cascade diffusion model, Monte-Carlo influence estimation, thread-pool parallelized.</li>
+          <li>Beijing PM2.5 time-series forecasting &mdash; Box&ndash;Jenkins ARIMA/ARIMAX with
+            meteorological covariates.</li>
+          <li>GARCH study of China's CO<sub>2</sub>-emissions series &mdash;
+            ARMA(2,1)&ndash;EGARCH(1,1)&ndash;JSU, selected across six GARCH families and five residual
+            distributions by AIC/BIC.</li>
+          <li>Applied regression analysis &mdash; NBA-salary modeling with Box-Cox transforms, residual and
+            influence diagnostics, and VIF collinearity checks, validated by 10-fold cross-validation.</li>
+          <li>Kaggle mobile-price classification &mdash; F-test/Lasso/Gini feature selection across
+            statistical, ML, and ensemble models; best 96.8% with multinomial logistic regression.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="education" aria-labelledby="education-heading">
+      <h2 id="education-heading">Education</h2>
+      <div class="entry">
+        <h3 class="entry-title"><a href="https://www.hku.hk/about/uid/introduction.html" target="_blank" rel="noopener noreferrer">The University of Hong Kong</a> <span class="entry-meta">Sep 2025 &ndash; Dec 2026</span></h3>
+        <p class="muted">Master of Data Science &middot; GPA 3.51 / 4.30</p>
+      </div>
+      <div class="entry">
+        <h3 class="entry-title"><a href="https://www.en.sdu.edu.cn/info/1142/4095.htm" target="_blank" rel="noopener noreferrer">Shandong University</a> <span class="entry-meta">Sep 2021 &ndash; Jun 2025</span></h3>
+        <p class="muted">B.S. in Statistics &middot; GPA 86.52 / 100 <br />B.E. in Computer Science (minor) &middot; GPA 88.86 / 100</p>
+      </div>
+    </section>
+
+    <section id="awards" aria-labelledby="awards-heading">
+      <h2 id="awards-heading">Honors &amp; Awards</h2>
+      <ul class="awards">
+        <li><span>MCM &mdash; Honorable Mention, <em>Momentum in Tennis</em></span> <span class="entry-meta">Feb 2024</span></li>
+        <li><span>CUMCM &mdash; First Prize (Shandong Province), <em>Vegetable Pricing and Replenishment</em></span> <span class="entry-meta">Sep 2023</span></li>
+      </ul>
+    </section>
+
+    <section id="skills" aria-labelledby="skills-heading">
+      <h2 id="skills-heading">Technical Skills</h2>
+      <p><strong>Machine Learning &amp; AI:</strong> PyTorch, NumPy, Pandas, SciPy; classical machine learning (scikit-learn); LLM fine-tuning (Hugging Face Transformers, PEFT/LoRA) and inference (vLLM); retrieval-augmented generation (LangChain, Chroma); vision-language models (CLIP, Qwen-VL); statistical modeling</p>
+      <p><strong>Programming Languages:</strong> Python, R, SQL <em>(Proficient)</em>; C++, Java <em>(Working Knowledge)</em>; JavaScript <em>(Familiar)</em></p>
+      <p><strong>Tools &amp; Systems:</strong> Linux (CLI), Git, CI/CD, Docker, conda, uv, W&amp;B, pytest, LaTeX</p>
+    </section>
+
+    <section id="beyond" aria-labelledby="beyond-heading">
+      <h2 id="beyond-heading">Personal</h2>
+      <p>
+        Outside my studies, I enjoy classical Chinese poetry, history, and biography, along with films, the outdoors, and music.
+        I also follow how fast AI is moving and like trying out ideas of my own.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; <span id="year"></span> Xiuyin Li</p>
+  </footer>
+</body>
+</html>
