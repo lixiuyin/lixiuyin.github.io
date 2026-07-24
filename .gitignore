@@ -1,0 +1,27 @@
+.DS_Store
+*.log
+
+assets/*
+!assets/*.pdf
+!assets/*.png
+!assets/*.jpg
+!assets/*.jpeg
+!assets/*.gif
+!assets/*.webp
+!assets/*.svg
+!assets/*.woff2
+assets/*.tex
+# Playwright MCP scratch (screenshots, previews) — never deploy
+.playwright-mcp/
+
+# Personal working notes — not part of the deployed site
+notes/
+
+# temporary files
+tmp/
+
+# obsidian
+.obsidian
+
+# output
+output/
