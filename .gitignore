@@ -1,0 +1,36 @@
+.DS_Store
+*.log
+
+assets/*
+!assets/*.pdf
+!assets/*.png
+!assets/*.jpg
+!assets/*.jpeg
+!assets/*.gif
+!assets/*.webp
+!assets/*.svg
+!assets/*.woff2
+!assets/CV.tex
+# Playwright MCP scratch (screenshots, previews) — never deploy
+.playwright-mcp/
+
+# Personal working notes — not part of the deployed site
+notes/
+
+# temporary files
+tmp/
+
+# obsidian
+.obsidian
+
+# output
+output/
+assets/Xiuyin_Li_CV.pdf
+assets/Xiuyin_Li_Transcripts.pdf
+
+# omo
+.omo
+
+# claude
+CLAUDE.md
+assets/Xiuyin_Li_Research_Assistant_Application_Academic_Deck.pdf
