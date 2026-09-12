@@ -1,0 +1,45 @@
+.DS_Store
+*.log
+*.pyc
+__pycache__/
+
+assets/*
+!assets/*.png
+!assets/*.jpg
+!assets/*.jpeg
+!assets/*.gif
+!assets/*.webp
+!assets/*.svg
+!assets/*.woff2
+# Playwright MCP scratch (screenshots, previews) — never deploy
+.playwright-mcp/
+
+# Personal working notes — not part of the deployed site
+notes/
+
+# temporary files
+tmp/
+
+# Local portfolio, project evidence and historical working records — never deploy
+materials/
+# Tool caches are regenerable, not website content
+.pytest_cache/
+.benchmarks/
+.claude/
+
+# obsidian
+.obsidian
+
+# omo
+.omo
+
+# claude
+CLAUDE.md
+assets/Xiuyin_Li_Research_Assistant_Application_Academic_Deck.pdf
+
+# other
+zh.html
+
+# codex
+.codex/
+AGENTS.md

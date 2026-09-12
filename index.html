@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>李袖印 | 大模型智能体开发与评测</title>
+  <meta name="description" content="李袖印，香港大学数据科学硕士在读，寻找 Agent 开发与评测实习。具备浏览器智能体、RAG、记忆管理与可靠性评测实践，可立即到岗、每周 5 天、连续实习 6 个月及以上。" />
+  <meta name="author" content="Xiuyin Li (Li Xiuyin · 李袖印 · lixiuyin)" />
+  <link rel="canonical" href="https://lixiuyin.github.io/" />
+  <link rel="alternate" hreflang="zh-Hans" href="https://lixiuyin.github.io/" />
+  <link rel="alternate" hreflang="x-default" href="https://lixiuyin.github.io/" />
+  <meta name="theme-color" content="#173a5e" />
+  <!-- Open Graph / social preview -->
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:url" content="https://lixiuyin.github.io/" />
+  <meta property="og:site_name" content="李袖印 · Xiuyin Li" />
+  <meta property="og:title" content="李袖印 | 大模型智能体开发与评测" />
+  <meta property="og:description" content="李袖印，香港大学数据科学硕士在读，寻找 Agent 开发与评测实习。具备浏览器智能体、RAG、记忆管理与可靠性评测实践，可立即到岗、每周 5 天、连续实习 6 个月及以上。" />
+  <!-- 原英文社交卡暂不公开；制作并确认中文版后再恢复 og:image。 -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="李袖印 | 大模型智能体开发与评测" />
+  <meta name="twitter:description" content="李袖印，香港大学数据科学硕士在读，寻找 Agent 开发与评测实习。具备浏览器智能体、RAG、记忆管理与可靠性评测实践，可立即到岗、每周 5 天、连续实习 6 个月及以上。" />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" sizes="any" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+  <style>
+:root {
+  color-scheme: light;
+  --bg: #fdfdfc;
+  --fg: #222;
+  --muted: #6a6a6a;
+  --accent: #173a5e;      /* restrained academic navy */
+  --line: #e3e3df;
+  --maxw: 860px;
+}
+
+/* 李袖印 only — Source Han Serif SC (OFL), subset to these 3 glyphs (~2.6 KB) so
+   the Chinese name renders identically on every device (Mac, iPhone, …) instead
+   of each system's own serif fallback. */
+@font-face {
+  font-family: "ZhName";
+  src: url("assets/zh-name.woff2") format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+/* Chinese page: Latin glyphs and digits still render in Georgia; CJK falls
+   through to each system's serif face (Source Han Serif SC / Noto Serif CJK /
+   Songti SC / SimSun). Body text is deliberately NOT a webfont subset — a
+   full-glyph subset would need a build step and re-subsetting on every edit. */
+body {
+  margin: 0;
+  color: var(--fg);
+  background: var(--bg);
+  font-family: Georgia, "Palatino Linotype", "Book Antiqua", Palatino, "Source Serif 4", "Source Han Serif SC", "Noto Serif CJK SC", "Songti SC", "SimSun", serif;
+  font-size: 17px;
+  line-height: 1.75;
+}
+
+a { color: var(--accent); text-decoration: none; transition: color 0.15s ease; }
+a:hover { text-decoration: underline; }
+/* Preserve the restrained heading/navigation treatment while making links in
+   prose recognizable without relying on color alone. */
+.contact a,
+.entry-title > a,
+.entry p a,
+ul.project-highlights a,
+ul.more-projects a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+}
+
+/* Keyboard focus only (not mouse clicks): a clear accent outline that stays
+   visible even on the background-less collapse toggle and beneath the navy
+   headings. Mouse users never see it; keyboard users always do. */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+main {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 32px 24px 24px;
+}
+
+/* ---------- Top nav ---------- */
+.topnav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.topnav-inner {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 11px 24px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 16px;
+}
+.topnav-name { font-weight: 700; color: var(--fg); font-size: 1rem; }
+.topnav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  font-size: 0.93rem;
+}
+/* Right cluster: the link group + the language switch + the standalone theme
+   toggle. Keeping the controls out of .topnav-links makes them read as
+   controls, not another nav destination. */
+.topnav-right {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.topnav-links a { color: var(--fg); }
+.topnav-links a:hover { color: var(--accent); }
+.topnav-links a[aria-current] {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
+}
+/* Language switch — a plain link to the other page (works with JS off). */
+.lang-toggle {
+  font-size: 0.93rem;
+  color: var(--fg);
+  white-space: nowrap;
+  padding-block: 5px;
+}
+.lang-toggle:hover { color: var(--accent); }
+/* Theme toggle — icon button at the end of the nav links. */
+.theme-toggle {
+  font: inherit;
+  font-size: 1.05rem;
+  line-height: 1;
+  color: var(--fg);
+  background: none;
+  border: 0;
+  width: 32px;
+  height: 32px;
+  padding: 7px;
+  cursor: pointer;
+  display: inline-grid;
+  place-items: center;
+  transition: color 0.15s ease;
+}
+.theme-toggle:hover { color: var(--accent); }
+.theme-toggle[hidden] { display: none; }
+/* Swap the icon with the theme: moon in light mode (click → dark), sun in dark. */
+.theme-toggle .icon-sun { display: none; }
+:root[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+:root[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+
+/* Offset anchored jumps so the sticky bar never covers a heading.
+   This is a static no-JS fallback; the inline script refines it to the live
+   nav height, which grows when the bar wraps to two lines on small screens. */
+html { scroll-padding-top: 64px; }
+
+/* ---------- Skip link (keyboard accessibility) ---------- */
+/* Off-screen until focused, then snaps to the top-left so keyboard users can
+   bypass the sticky nav straight to the content. */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  background: var(--accent);
+  color: #fff;
+  padding: 8px 14px;
+  font-size: 0.9rem;
+  border-radius: 0 0 4px 0;
+}
+.skip-link:focus {
+  left: 0;
+  color: #fff;
+  outline: 2px solid #fff;
+  outline-offset: -2px;
+}
+
+/* ---------- Intro ---------- */
+.intro {
+  display: flex;
+  align-items: flex-end;     /* photo bottom aligns with the contact row */
+  justify-content: space-between;
+  gap: 28px;
+  margin-bottom: 8px;
+}
+.avatar {
+  width: 120px;
+  height: 168px;         /* true 1-inch ratio: 2.5cm x 3.5cm = 5:7 */
+  object-fit: cover;
+  object-position: top;  /* keep the head, crop from the bottom if needed */
+  border-radius: 4px;
+  border: 1px solid var(--line);
+  flex-shrink: 0;
+}
+/* Chinese-only display name, using the dedicated name font. */
+.intro-text h1 {
+  margin: 0 0 8px;
+  font-size: 1.9rem;
+  line-height: 1.3;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  font-family: "ZhName", "Songti SC", serif;
+}
+.role { margin: 0 0 8px; font-size: 1.02rem; }
+/* Keep the institution name intact: when it doesn't fit, the whole name wraps
+   to the next line rather than splitting mid-name. */
+.role .muted { white-space: nowrap; }
+.contact { margin: 0; font-size: 0.95rem; }
+
+/* ---------- Sections ---------- */
+.bio { margin: 0 0 4px; }
+.bio p { margin: 0; }
+.bio p + p { margin-top: 8px; }
+
+section { padding: 26px 0 4px; }
+ul.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 32px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.skills-grid li {
+  min-width: 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+.skills-grid li:nth-child(-n + 2) {
+  padding-top: 0;
+  border-top: 0;
+}
+.skills-grid h3 {
+  margin: 0 0 4px;
+  color: var(--fg);
+  font-size: 1rem;
+  line-height: 1.35;
+  text-wrap: balance;
+}
+.skills-grid p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.96rem;
+  line-height: 1.6;
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
+}
+
+h2 {
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 0 0 12px;
+  padding: 0 0 5px;
+  border-bottom: 1px solid var(--line);
+  position: relative;
+}
+/* Navy accent rule drawn as a pseudo-element so it hugs the heading's left edge
+   WITHOUT indenting the text — the title stays flush with the body below it. */
+h2::before {
+  content: "";
+  position: absolute;
+  left: -9px;
+  top: 0.15em;
+  bottom: 6px;
+  width: 3px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+p { margin: 0 0 10px; }
+.muted { color: var(--muted); }
+.seeking { color: var(--accent); font-weight: 700; }
+em { font-style: italic; }
+
+.entry {
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+.entry + .entry { margin-top: 18px; }
+.entry:last-child { border-bottom: 0; padding-bottom: 0; }
+.entry-title {
+  font-size: 1rem;       /* reset <h3> default (1.17em) so titles match the old <p> size */
+  line-height: inherit;
+  font-weight: 700;
+  margin: 0 0 2px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75em;
+  flex-wrap: wrap;
+}
+.entry-title > a {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.entry-meta {
+  font-weight: 400;
+  font-style: italic;
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-left: auto;
+  white-space: nowrap;
+}
+.entry p { font-size: 0.97rem; }
+/* A quiet project synopsis separates context from the verb-led
+   contribution bullets below it. */
+.entry p.project-summary {
+  margin: 1px 0 6px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+/* Verb-led contribution bullets for project entries. */
+ul.project-highlights {
+  margin: 0;
+  padding-left: 1.15em;
+  font-size: 0.97rem;
+}
+ul.project-highlights li { margin-bottom: 5px; }
+.entry p.project-result { margin: 6px 0 10px; font-size: 0.97rem; line-height: 1.6; text-wrap: pretty; }
+.project-evidence { margin-top: 8px; font-size: 0.92rem; }
+.project-evidence summary { cursor: pointer; color: var(--accent); }
+.project-evidence summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.project-evidence p { margin: 8px 0 0; font-size: 0.92rem; overflow-wrap: anywhere; }
+ul.project-highlights li,
+ul.more-projects li { text-wrap: pretty; }
+ul.project-highlights li::marker { color: var(--accent); }
+/* Compact, secondary list for the trailing "其他项目" breadth. */
+ul.more-projects { margin: 4px 0 0; padding-left: 1.15em; font-size: 0.97rem; }
+ul.more-projects li { margin-bottom: 5px; }
+ul.project-highlights li:last-child,
+ul.more-projects li:last-child { margin-bottom: 0; }
+/* 关注方向 — bold theme on its own line, concise description beneath. */
+ul.interests { margin: 4px 0 0; padding-left: 1.15em; }
+ul.interests li { margin-bottom: 7px; }
+ul.interests li strong { display: block; color: var(--accent); margin-bottom: 2px; }
+.bio p,
+ul.interests li { text-wrap: pretty; }
+
+/* ---------- Collapsible overflow (driven by [data-collapse-after] + JS) ---------- */
+.collapse-region {              /* animate height with no magic-number max-height */
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.28s ease;
+}
+.collapse-region > div { overflow: hidden; }
+.collapse-region .entry:first-child { margin-top: 18px; }
+.is-open > .collapse-region { grid-template-rows: 1fr; }
+
+.collapse-toggle {
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--accent);
+  background: none;
+  border: 0;
+  padding: 4px 0;
+  margin-top: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.collapse-toggle:hover { text-decoration: underline; }
+.collapse-toggle .chev {
+  font-size: 0.8em;
+  transition: transform 0.2s ease;
+}
+.is-open > .collapse-toggle .chev { transform: rotate(180deg); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }   /* no smooth anchor jumps for motion-sensitive users */
+  a, .collapse-toggle,
+  .collapse-region, .collapse-toggle .chev { transition: none; }
+}
+
+code {
+  font-family: "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.82em;
+  background: #f1f1ee;
+  border-radius: 3px;
+  padding: 0 4px;
+}
+
+/* ---------- Footer ---------- */
+footer {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  border-top: 1px solid var(--line);
+  padding: 18px 24px 40px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 700px) {
+  ul.skills-grid { grid-template-columns: 1fr; gap: 14px; }
+  .skills-grid li:nth-child(2) {
+    padding-top: 10px;
+    border-top: 1px solid var(--line);
+  }
+}
+
+@media (max-width: 560px) {
+  main { padding: 36px 18px 16px; }
+
+  .topnav-inner { padding: 6px 18px; gap: 4px 12px; }
+  /* The full name appears immediately below in the page heading; hiding the
+     duplicate nav label keeps the sticky mobile bar compact. */
+  .topnav-name { display: none; }
+  .topnav-right { width: 100%; flex-wrap: nowrap; gap: 8px; }
+  .topnav-links {
+    flex: 1;
+    flex-wrap: wrap;
+    gap: 0 10px;
+    min-width: 0;
+    font-size: 0.9rem;
+  }
+  .topnav-links a { padding-block: 7px; }
+  .lang-toggle { flex-shrink: 0; }
+  .theme-toggle { width: 40px; height: 40px; padding: 11px; flex-shrink: 0; }
+
+  /* Stack the intro vertically and centre it — without this, the column layout
+     inherits the desktop `align-items: flex-end` and pins the photo (and text)
+     to the right edge. */
+  .intro { flex-direction: column; align-items: center; text-align: center; gap: 16px; }
+  .avatar { width: 110px; height: 154px; }
+
+  /* Stack each entry's title above its role/date meta, left-aligned, so the
+     meta no longer floats to the right edge on its own line once the title
+     wraps on a narrow screen. */
+  .entry-title { flex-direction: column; align-items: flex-start; gap: 0; }
+  .entry-meta { margin-left: 0; white-space: normal; }
+  footer { padding-inline: 18px; }
+}
+
+/* ---------- Dark mode (manual toggle; follows the OS on first visit) ---------- */
+/* Driven by [data-theme="dark"] on <html>. An inline head script sets it from the
+   saved choice (or the OS setting on first visit) before first paint; the nav
+   button flips + persists it. Default — no JS / no attribute — is light. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #1b1e24;
+  --fg: #d9d5cc;
+  --muted: #a8a298;     /* lifted from #9b968d for comfort; still ~6.8:1 on the dark ground */
+  --accent: #93b4f0;     /* lighter blue: the navy is invisible on a dark ground */
+  --line: #33373e;
+}
+:root[data-theme="dark"] code { background: #2a2e35; }
+:root[data-theme="dark"] .skip-link,
+:root[data-theme="dark"] .skip-link:focus { color: #1b1e24; }   /* dark text on the now-light accent */
+
+/* ---------- Print ---------- */
+/* Academics and committees often save the page to PDF. The most important fix:
+   expand the JS-collapsed project entries (otherwise only the top three print
+   and the rest are lost), drop the sticky nav and its toggle, and strip the
+   photo border so the printed page reads cleanly. */
+@media print {
+  :root, :root[data-theme] { color-scheme: light; --bg: #fff; --fg: #000; --muted: #444; --accent: #173a5e; --line: #999; }
+  .topnav { display: none; }
+  .collapse-toggle { display: none; }
+  .collapse-region,
+  .collapse-region > div { display: block !important; overflow: visible !important; }
+  .avatar { border: 0; }
+
+  body { background: #fff; font-size: 11pt; line-height: 1.5; color: #000; }
+  main { padding: 0; max-width: none; }
+  footer { padding: 12pt 0 0; border-color: #999; }
+  code { background: transparent; }
+  h2, .entry-title {
+    break-after: avoid-page;
+    page-break-after: avoid;
+  }
+  .entry { page-break-inside: avoid; }
+  .additional-projects {
+    break-inside: auto;
+    page-break-inside: auto;
+  }
+  .additional-projects li {
+    break-inside: avoid-page;
+    page-break-inside: avoid;
+  }
+}
+  </style>
+  <script>
+    // Set the theme before first paint to avoid a flash: saved choice, else OS setting.
+    (function () {
+      try {
+        var saved = localStorage.getItem('theme');
+        var sysDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var theme = saved || (sysDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+        var tc = document.querySelector('meta[name="theme-color"]');
+        if (tc) tc.setAttribute('content', theme === 'dark' ? '#1b1e24' : '#173a5e');
+      } catch (e) { /* localStorage blocked (private mode) — stay light, the default */ }
+    })();
+  </script>
+  <script src="main.js?v=20260912-3" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "李袖印",
+    "alternateName": ["Xiuyin Li", "Li Xiuyin", "lixiuyin"],
+    "url": "https://lixiuyin.github.io/",
+    "description": "香港大学数据科学硕士在读，本科毕业于山东大学统计学专业。关注可靠的长程大语言模型智能体、评测与失败分析、智能体系统与评测框架，以及受控环境与交互数据。",
+    "image": "https://lixiuyin.github.io/assets/photo.jpg",
+    "jobTitle": "数据科学硕士生",
+    "affiliation": { "@type": "CollegeOrUniversity", "name": "The University of Hong Kong" },
+    "alumniOf": { "@type": "CollegeOrUniversity", "name": "Shandong University" },
+    "knowsAbout": ["长程智能体评测与失败分析", "智能体系统与评测框架", "用于智能体评测的受控环境与交互数据", "跨任务适应与迁移", "记忆、工具使用与检索证据", "不确定性量化与校准"],
+    "sameAs": [
+      "https://github.com/lixiuyin"
+    ]
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+  <nav class="topnav" aria-label="主导航">
+    <div class="topnav-inner">
+      <a class="topnav-name" href="#top">李袖印</a>
+      <div class="topnav-right">
+        <div class="topnav-links">
+          <a href="#projects">项目经历</a>
+          <a href="#skills">专业技能</a>
+          <a href="#interests">关注方向</a>
+          <a href="#education">教育背景</a>
+        </div>
+        <!-- 英文主页入口暂时隐藏；恢复双语主页时可在此重新启用语言切换。 -->
+        <button class="theme-toggle" type="button" aria-label="切换到深色主题" aria-pressed="false" title="切换到深色主题" hidden>
+          <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main id="main-content" tabindex="-1">
+    <!-- ===== Intro ===== -->
+    <header class="intro" id="top">
+      <div class="intro-text">
+        <h1>李袖印</h1>
+        <p class="role">数据科学硕士在读，<span class="muted">香港大学</span></p>
+        <p class="contact">
+          <a href="mailto:lixiuyin2025@163.com">lixiuyin2025@163.com</a> &middot;
+          <a href="https://github.com/lixiuyin" target="_blank" rel="noopener noreferrer">GitHub</a> &middot; <span>IELTS 7.0</span>
+          <!-- LinkedIn temporarily hidden; retain for restoration:
+          &middot; <a href="https://www.linkedin.com/in/xiuyin-li/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          -->
+          <!-- Add when available: Google Scholar, ORCID -->
+        </p>
+      </div>
+      <img class="avatar" src="assets/photo.jpg" alt="李袖印的照片" width="120" height="168" />
+    </header>
+
+    <div class="bio">
+      <p>
+        香港大学数据科学硕士在读，已完成授课课程，预计于 2027 年 7 月获授学位。主导 MeetingAgent 的架构与核心开发，独立开发 WebAgent 浏览器智能体及评测框架，具备工具调用、多步任务执行、RAG、记忆管理与结果核验实践。
+      </p>
+      <p>
+        寻找 Agent 开发与评测方向的日常实习，可立即到岗，每周 5 天，可连续实习 6 个月及以上。现居成都，可赴全国异地实习，可配合项目需要临时加班。
+      </p>
+    </div>
+
+    <section id="projects" data-collapse-after="2" aria-labelledby="projects-heading">
+      <h2 id="projects-heading">项目经历</h2>
+
+      <div class="entry" id="project-webagent">
+        <h3 class="entry-title">
+          <a href="https://github.com/lixiuyin/web-agent" target="_blank" rel="noopener noreferrer">WebAgent &mdash; 多模态浏览器智能体与评测框架</a>
+          <span class="entry-meta">独立设计与开发 &middot; 2026年8月&ndash;至今</span>
+        </h3>
+        <p class="project-summary muted">针对长程任务中的导航偏航、错误完成声明与中断恢复问题，独立设计模型无关的多模态 Chromium 智能体，将动作依据、可恢复执行与独立验收纳入统一框架。</p>
+        <p class="project-result"><strong>交付与验证：</strong>项目内评测中，两个模型在相同的 36 项任务上共通过 71/72 次执行；覆盖开放网页、多域沙箱与强制中断恢复，保留失败轨迹用于诊断。</p>
+        <ul class="project-highlights">
+          <li><strong>分离规划与受控执行：</strong>以 Planner、Tool 与 AgentHook 协议解耦规划与工具执行，通过 Playwright/CDP 获取截图与 DOM 观察，以类型化工具和策略门控约束动作。</li>
+          <li><strong>使中断后的执行可恢复：</strong>通过有界重规划、循环检测与原子检查点控制长程执行，恢复进度及受支持的浏览器状态，并以强制中断任务验证恢复后的终态。</li>
+          <li><strong>让信息获取保留证据：</strong>通过图注定位 PDF 图表，以质量门控的 OCR/解析级联读取文档；保存可见搜索、来源与下载记录，通过轨迹约束校验核查信息获取过程。</li>
+          <li><strong>独立验收并分析失败：</strong>以独立终态断言验收任务，分开记录完成声明、动作有效性与轨迹约束；结合 DOM 和工具历史分析失败。</li>
+        </ul>
+        <details class="project-evidence">
+          <summary>实现与评测说明</summary>
+          <p>通过 AgentHook 扩展执行生命周期；遇到验证码或未获授权的高风险操作时停止执行。恢复检查同时核验执行进度、浏览器状态与任务终态。</p>
+          <p>固定版本与任务集覆盖 30 项开放网页任务、5 项多域沙箱任务和 1 项 60 阶段强制恢复任务；GLM 通过 36/36、Qwen 通过 35/36。结合终态断言、DOM 与动作历史，定位购物任务中的规划偏航，并识别导航历史残留的促成作用；保留失败记录，不以运行结束代替任务成功。</p>
+          <p><a href="https://github.com/lixiuyin/web-agent/blob/00e1c0ce0927e37bae63fa7647891ea3d690f102/docs/research/results/generality-campaign-2026-09-09.zh-CN.md" target="_blank" rel="noopener noreferrer">查看固定版本 campaign 记录</a> · <a href="https://github.com/lixiuyin/web-agent/blob/00e1c0ce0927e37bae63fa7647891ea3d690f102/docs/research/results/qwen-strict-search-2026-09-09.zh-CN.md" target="_blank" rel="noopener noreferrer">查看独立严格搜索记录</a></p>
+        </details>
+      </div>
+
+      <div class="entry" id="project-meetingagent">
+        <h3 class="entry-title">
+          <a href="https://github.com/lixiuyin/meeting-agent" target="_blank" rel="noopener noreferrer">MeetingAgent &mdash; 多模态会议知识助手</a>
+          <span class="entry-meta">项目负责人（主体架构与核心开发） &middot; 2026年4月&ndash;至今</span>
+        </h3>
+        <p class="project-summary muted">针对录音、文档、表格与图像分散且难以核验的问题，主导架构与核心开发，持续迭代资料摄取、可引用问答和跨会话记忆流程。</p>
+        <p class="project-result"><strong>交付与验证：</strong>项目内评测中，小样本问答集经独立 Judge 评审，平均忠实度评分为 0.883、引用质量评分为 0.927；记忆流水线通过 22/22 项事件正确性检查，分别验证回答质量与记忆处理正确性。</p>
+        <ul class="project-highlights">
+          <li><strong>从异构素材到可引用回答：</strong>主导 FastAPI/React 模块化单体系统，分离摄取、检索与生成；通过持久化任务、租约回收与重试支持恢复，SSE 流式回答提供页码、幻灯片和时间戳引用。</li>
+          <li><strong>兼顾召回覆盖与上下文范围：</strong>并行执行摘要 Router 与 Funnel 原文宽召回，融合 Chroma 语义检索、SQLite FTS5/BM25 与 RRF，按文件分配候选并按需重排；以证据门控约束快速回答路径。</li>
+          <li><strong>保留记忆的来源与变化：</strong>以类型化事实、不可变修订快照和双时态查询区分事实有效时间与系统获知时间；关联来源证据与审核状态，支持历史追溯、跨会话检索及项目/任务跟踪。</li>
+          <li><strong>将功能完成与质量达标分开核验：</strong>构建检索、问答、记忆与端到端分层评测，结合排序指标、独立 Judge、引用核验和浏览器测试，分别跟踪功能完成、回答质量与响应性能。</li>
+        </ul>
+        <details class="project-evidence">
+          <summary>实现与评测说明</summary>
+          <p>SQLite 持久化任务保留死信记录；以质量门控的解析 API 级联和 PDF 本地回退处理异构资料。检索结合会话锚点，并按规则区分原子事实、有限综合与分析综合查询。</p>
+          <p>独立 Judge 对小样本问答集每例评审 3 次，忠实度与引用质量均采用 0–1 评分，报告重复评审的平均分；记忆检查覆盖写入、召回、最新值及来源关联。修复生成硬截断后，20 次性能请求均完成且未降级，但首字延迟仍未达到预设门槛；分别核验功能完成性、回答质量与响应性能，避免将请求完成视为全面达标。</p>
+          <p><a href="https://github.com/lixiuyin/meeting-agent/blob/ad06d8a136268a9b52310488aa54329d4b5a7254/README.zh-CN.md#%E6%9C%80%E6%96%B0-benchmark-%E7%BB%93%E6%9E%9C" target="_blank" rel="noopener noreferrer">查看评测报告（固定版本）</a> · <a href="https://github.com/lixiuyin/meeting-agent/blob/ad06d8a136268a9b52310488aa54329d4b5a7254/docs/validation/latest-benchmark.json" target="_blank" rel="noopener noreferrer">原始数据（JSON）</a></p>
+        </details>
+      </div>
+
+      <div class="entry">
+        <h3 class="entry-title">
+          <a href="https://github.com/lixiuyin/zero-shot-cnn-textual-description-reproduction" target="_blank" rel="noopener noreferrer">零样本图文学习 &mdash; 复现与对照评测</a>
+          <span class="entry-meta">独立完成核心复现，负责扩展集成 &middot; 2026年3月</span>
+        </h3>
+        <p class="project-summary muted">面向缺少类别训练图像的识别场景，使用 PyTorch 独立复现
+          <a href="https://arxiv.org/pdf/1506.00511" target="_blank" rel="noopener noreferrer">Ba 等（ICCV 2015）</a>
+          的文本生成分类器方法，检验类别描述能否支持未见类别识别；负责核心实现与团队扩展模块的集成，在统一协议下比较不同设计的效果。</p>
+        <ul class="project-highlights">
+          <li><strong>实现核心方法：</strong>从零实现全连接、卷积及联合三类预测器，由类别文本生成分类器权重或类别专属卷积滤波器，与冻结的 VGG-19 图像特征配合完成识别；遵循已见/未见类别评估协议，并记录与论文的数据及评测差异。</li>
+          <li><strong>建立可复现对照：</strong>构建 CUB/Flowers 训练与评测流程，生成四组与论文对应的结果表；通过词语敏感性分析、最近邻检索和滤波器可视化，检查文本属性与视觉响应的对应关系。</li>
+          <li><strong>验证扩展效果：</strong>调整并集成团队成员贡献的模块，完成 13 组受控实验，覆盖 3 种辅助损失、4 种 SBERT/CLIP 文本编码方案及 6 种 DenseNet-121/ResNet-50 主干配置；固定联合模型、VGG-19 和 BCE 设置时，多粒度 CLIP 方案的 CUB 未见类别 ROC-AUC 从基线 0.680 提升至 0.886。</li>
+        </ul>
+      </div>
+
+      <div class="entry" id="project-library">
+        <h3 class="entry-title">
+          <a href="https://github.com/lixiuyin/library-management-system" target="_blank" rel="noopener noreferrer">图书馆管理系统 &mdash; 数据库设计与全栈开发</a>
+          <span class="entry-meta">独立开发</span>
+        </h3>
+        <p class="project-summary muted">围绕图书借阅、罚款、权限与审计需求，独立开发数据库驱动的命令行系统与前后端分离的 Web 平台，将业务规则落实为数据约束、后端接口和读者/管理员操作流程。</p>
+        <ul class="project-highlights">
+          <li><strong>把规则落实到数据库：</strong>基于 SQL Server/Python CLI 设计 9 张表、7 个触发器和 26 个存储过程，交付支持借阅、罚款、审计与恢复规则的命令行系统。</li>
+          <li><strong>交付双端 Web 平台：</strong>基于 Flask/MySQL/Vue 2 实现 30 个 REST 接口、JWT 角色控制与前后端联调，使读者与管理员通过各自界面完成相应业务操作。</li>
+        </ul>
+      </div>
+
+      <div class="entry">
+        <h3 class="entry-title">
+          <a href="https://github.com/lixiuyin/nllb-200-distilled-1.3b-zh-en-wmt19-lora" target="_blank" rel="noopener noreferrer">NLLB-200 中译英 &mdash; LoRA 微调</a>
+          <span class="entry-meta">独立实现 &middot; 2025年11月</span>
+        </h3>
+        <p class="project-summary muted">面向资源受限环境的中译英适配任务，独立实现 NLLB-200-distilled-1.3B 的 LoRA 微调流程，以参数高效训练完成模型适配，并分离模型选择与最终测试。</p>
+        <ul class="project-highlights">
+          <li><strong>训练与数据控制：</strong>在注意力和前馈投影模块应用 rank-32 LoRA，显式设置源语言与目标语言；选取 60 万条 WMT19 训练对，仅在训练集执行质量过滤与精确句对去重。</li>
+          <li><strong>留出评测结果：</strong>使用独立的 2,000 对验证切片按 BLEU 选择检查点，再以未经修改的原始 WMT19 validation split（3,981 对）作为保留测试集，采用 5-beam 解码取得 24.9 sacreBLEU。</li>
+        </ul>
+      </div>
+
+      <div class="entry">
+        <h3 class="entry-title">
+          <a href="https://github.com/lixiuyin/math-formula-to-latex" target="_blank" rel="noopener noreferrer">ViT Image-to-LaTeX &mdash; 数学表达式识别</a>
+          <span class="entry-meta">独立设计与实现 &middot; 2025年6月</span>
+        </h3>
+        <p class="project-summary muted">针对公式图像转写为 LaTeX 的任务，独立设计并从零训练纯 Transformer 系统，在统一训练协议下比较印刷体与手写公式识别，分析训练稳定性和实际生成质量。</p>
+        <ul class="project-highlights">
+          <li><strong>实现端到端生成：</strong>构建不依赖 CNN 主干或语法约束的 770 万参数 ViT 编码器—Transformer 解码器，分别使用 50,000 条印刷体公式和 50,000 条手写公式从零训练。</li>
+          <li><strong>诊断并修复训练问题：</strong>定位学习率预热峰值附近的优化崩溃，通过全局范数 1.0 的梯度裁剪和 800 步 Transformer 预热计划，使两个数据集上的训练保持稳定。</li>
+          <li><strong>评估生成质量并分析差异：</strong>分别训练印刷体与手写体模型，同时评估 teacher-forcing 准确率和自回归 BLEU-4；在两个数据集各 500 个测试样本上，四束搜索分别取得 0.701、0.079 BLEU-4，通过对照分析训练指标与实际生成质量的差异，为后续优化提供依据。</li>
+        </ul>
+      </div>
+
+      <div class="entry">
+        <h3 class="entry-title">
+          <a href="https://github.com/lixiuyin/cnn-lstm-transformer-text-classification" target="_blank" rel="noopener noreferrer">CNN、BiLSTM 与 Transformer 文本分类</a>
+          <span class="entry-meta">独立实现与实验 &middot; 2025年5月</span>
+        </h3>
+        <p class="project-summary muted">围绕文本分类中准确率与推理成本的权衡，独立实现 CNN、BiLSTM 与 Transformer，在四个数据集上建立统一实验流程，比较不同架构的效果与吞吐量。</p>
+        <ul class="project-highlights">
+          <li><strong>推导并实现模型：</strong>推导 vanilla RNN、标准 LSTM 与 peephole LSTM 的前向传播和随时间反向传播公式，分析循环、卷积与自注意力的计算复杂度，完成三类分类器的 PyTorch 实现。</li>
+          <li><strong>控制对照条件：</strong>统一使用 GloVe-300d 初始化的可训练词嵌入，在 IMDB、AG News、BBC News 与 SST-5 上评估；词表仅由训练集构建，避免测试集信息泄漏。</li>
+          <li><strong>量化准确率与推理效率：</strong>在固定随机种子 seed=42 的实验设置下比较 12 个模型—数据集组合，CNN 在四个数据集上均有最高前向吞吐量，在 IMDB、BBC News 与 SST-5 上分别取得 88.5%、97.3% 和 42.4% 的最佳或并列最佳测试准确率；基于 RTX 5090、batch=512 测量吞吐量，形成各数据集下的架构选型对照。</li>
+        </ul>
+      </div>
+
+      <div class="entry additional-projects">
+        <h3 class="entry-title">其他项目</h3>
+        <ul class="more-projects">
+          <li><a href="https://github.com/lixiuyin/cifar100-image-classification" target="_blank" rel="noopener noreferrer">CIFAR-100 图像分类</a>
+            &mdash; 面向单卡资源条件下的 100 类图像识别，独立实现 3,654 万参数的 pre-activation WideResNet-28-10，结合难度与超类感知的离线增强、MixUp/CutMix、EMA、混合精度及预热—余弦训练。单张 16 GB GPU 约 2.5 小时完成训练与评测，在官方 10,000 张测试图像上取得 0.832 macro-F1。</li>
+          <li><a href="https://github.com/lixiuyin/java-influence-maximization" target="_blank" rel="noopener noreferrer">Java 影响力最大化</a>
+            &mdash; 为在种子数量受限时扩大正向传播，独立实现边际增益贪心算法与并行蒙特卡洛评估，在包含 10,966 个节点、44,356 条有向边的有符号独立级联网络中选择 10 个种子。经 100,000 次仿真评测，平均正向影响节点数为 167，较两个基于度的基线（均为 149）提升约 12.1%。</li>
+        </ul>
+      </div>
+
+    </section>
+
+
+    <!--
+    研究与方法经历暂不在日常实习版本中展示；针对统计、数据科学或研究型岗位时可恢复。
+    <section id="research" aria-labelledby="research-heading">
+      <h2 id="research-heading">研究与方法经历</h2>
+      <div class="entry">
+        <h3 class="entry-title">
+          <a href="https://github.com/lixiuyin/em-mcem-treg-mixed-models" target="_blank" rel="noopener noreferrer">用于回归模型参数估计的 EM 与 MCEM</a>
+          <span class="entry-meta">本科毕业论文 &middot; 2025年5月</span>
+        </h3>
+        <p class="project-summary muted">一项方法论研究与 R 实现：为 Student's <em>t</em> 回归与线性混合模型推导并实现
+          EM/MCEM 估计量，结合理论推导、基于模拟的验证与两个真实数据应用。</p>
+        <ul class="project-highlights">
+          <li>推导 Student's <em>t</em> 回归与线性混合模型的隐变量后验分布，并在 R 中实现所得 EM/MCEM
+            算法：固定效应采用边际 GLS（ECME）更新，方差分量更新之间重新计算后验量，并对 <em>t</em> 回归保持
+            MAP 目标、对混合模型保持 ML/REML 目标的显式表达。</li>
+          <li>引入 REML 更新，以在组数较少时降低方差分量偏差；以 200 次与 500 次重复的可复现模拟评估该修正；在单数据集对照检查中，确定性
+            EM 与 <code>optim</code>、<code>lme4</code>、<code>nlme</code> 的一致性达到
+            10<sup>&minus;8</sup>&ndash;10<sup>&minus;6</sup>。</li>
+          <li>将方法应用于 8,000 个 UTKFace 人脸年龄嵌入，以及来自 299 名标注者的 59,699 条 CIFAR-10H
+            标注用时数据；重构计算以避免大型稠密矩阵；<em>t</em> 模型的样本内拟合优于高斯基线，混合模型实现与
+            <code>lme4</code> 高度一致。</li>
+        </ul>
+      </div>
+
+      <div class="entry">
+        <h3 class="entry-title">
+          用于因果推断的合成控制方法
+          <span class="entry-meta">研究合作 &middot; 2024年7月&ndash;8月</span>
+        </h3>
+        <p class="project-summary muted">与<a href="https://scholar.google.com/citations?user=oBPd6C0AAAAJ" target="_blank" rel="noopener noreferrer">王云昊</a>及另外三名本科同学合作的
+          R 语言研究：复现实证合成控制分析，并考察其数据、供体池、估计与处理效应选择。</p>
+        <ul class="project-highlights">
+          <li>在 R 中复现多项合成控制研究，重建数据准备、供体池、预测变量设定、估计流程与处理效应分析。</li>
+        </ul>
+      </div>
+    </section>
+    -->
+
+    <section id="skills" aria-labelledby="skills-heading">
+      <h2 id="skills-heading">专业技能</h2>
+      <ul class="skills-grid">
+        <li>
+          <h3>编程与接口</h3>
+          <p>以 Python、SQL 为主要开发语言，掌握 C++、Java 基本语法；使用 FastAPI/Flask 开发后端接口，具备 REST/OpenAPI、Pydantic 与 JSON Schema 实践。</p>
+        </li>
+        <li>
+          <h3>Agent 与 RAG</h3>
+          <p>实现规划、工具调用、状态与记忆管理、策略门控和检查点恢复；构建基于 Chroma、SQLite FTS5/BM25、RRF 与条件式重排的混合检索流程。使用过 LangChain，了解 MCP 工具接入。</p>
+        </li>
+        <li>
+          <h3>评测与诊断</h3>
+          <p>设计任务集、独立终态断言与轨迹约束，结合程序化核验和 LLM 裁判评估任务成功、回答忠实度及引用质量；开展失败归因、回归验证与置信度校准评估。</p>
+        </li>
+        <li>
+          <h3>数据与模型</h3>
+          <p>使用 NumPy、pandas、scikit-learn 完成数据处理、模型实现和评估，具备 PyTorch、Transformers/PEFT、LoRA 微调实践；了解 LLM 训练全流程及 PPO、GRPO 等后训练方法原理。</p>
+        </li>
+        <li>
+          <h3>异步与质量</h3>
+          <p>使用 asyncio、httpx、SSE/WebSocket 构建异步与流式流程；使用 pytest/pytest-asyncio、Hypothesis 和 Playwright/CDP 开展单元、属性与浏览器测试，并设置覆盖率门禁。</p>
+        </li>
+        <li>
+          <h3>工程与复现</h3>
+          <p>使用 Git、Linux、Docker Compose、GitHub Actions 与 uv 管理开发和构建流程，具备包构建、校验与发布工作流配置实践；结合 Claude Code/Codex 辅助开发，并通过代码审查与测试核验结果。</p>
+        </li>
+      </ul>
+    </section>
+
+    <section id="interests" aria-labelledby="interests-heading">
+      <h2 id="interests-heading">关注方向</h2>
+      <ul class="interests">
+        <li>
+          <strong>长程智能体系统</strong>
+          规划、工具调用、长期记忆、检索证据与执行控制在多步骤工作流中的协同。
+        </li>
+        <li>
+          <strong>可靠性评测与失败分析</strong>
+          结合终态结果、版本化轨迹、工具历史与证据链评估任务成功、误完成、动作有效性与置信度校准。
+        </li>
+        <li>
+          <strong>受控评测与迁移验证</strong>
+          通过可验证任务、定向失败场景和留出设置检验系统改进是否能够跨任务与场景迁移。
+        </li>
+        <li>
+          <strong>后训练与智能体自我改进</strong>
+          关注监督微调、偏好对齐与强化学习中的反馈质量，以及奖励投机和过度优化对可靠性的影响。
+        </li>
+      </ul>
+      <!-- 原研究助理定位：
+      <p>
+        我正在寻找研究助理机会，通过严格的实证工作推进上述问题。我可以立即开始，并能够持续投入至少一年。我愿意搬到合作机构附近参与现场协作、保持高效沟通。我计划申请攻读博士学位。
+      </p>
+      -->
+    </section>
+
+    <section id="education" aria-labelledby="education-heading">
+      <h2 id="education-heading">教育背景</h2>
+      <div class="entry">
+        <h3 class="entry-title"><a href="https://www.hku.hk/sc/about-hku/university-identity/introduction" target="_blank" rel="noopener noreferrer">香港大学</a> <span class="entry-meta">2025年9月 &ndash; 2027年7月</span></h3>
+        <p class="muted">数据科学硕士在读（GPA 3.51，前 30%）</p>
+      </div>
+      <div class="entry">
+        <h3 class="entry-title"><a href="https://www.sdu.edu.cn/sdgk/sdjj.htm" target="_blank" rel="noopener noreferrer">山东大学</a> <span class="entry-meta">2021年9月 &ndash; 2025年6月</span></h3>
+        <p class="muted">统计学理学学士（均分 86.52，前 30%）<br />计算机科学与技术辅修（均分 88.86）</p>
+      </div>
+    </section>
+
+    <!--
+    教学经历暂不在日常实习版本中展示；申请教育科技、助教或强调沟通能力的岗位时可恢复。
+    <section id="teaching" aria-labelledby="teaching-heading">
+      <h2 id="teaching-heading">教学经历</h2>
+      <div class="entry">
+        <h3 class="entry-title">
+          <span>助教</span>
+          <span class="entry-meta">山东大学 &middot; 2024年9月 &ndash; 2025年6月</span>
+        </h3>
+        <p class="project-summary muted">数学分析 I &amp; II &middot; 偏微分方程</p>
+        <ul class="project-highlights">
+          <li>为数学分析 I、II 与偏微分方程三个班级、约 150 名学生批改平时作业并答疑。</li>
+          <li>将中文偏微分方程课件译为英文并统一 LaTeX 排版格式；另协助微积分教材及相关材料的 LaTeX 排版。</li>
+        </ul>
+      </div>
+    </section>
+    -->
+
+  </main>
+
+  <footer>
+    <p>&copy; <span id="year">2026</span> 李袖印</p>
+  </footer>
+</body>
+</html>
