@@ -19,6 +19,8 @@ test('education retains degree dates and overall grades after removing course sc
   for (const path of sourcePaths.filter(isChineseCv)) {
     assert.doesNotMatch(sources[path], /2027年7月（预计）/);
     assert.match(sources[path], /2025年9月 -- 2027年7月/);
+    assert.match(sources[path], /2021年9月 -- 2025年7月/);
+    assert.doesNotMatch(sources[path], /2021年9月 -- 2025年6月/);
     for (const token of ['数据科学硕士', 'GPA 3.51', '均分 86.52', '均分 88.86']) {
       assert.ok(sources[path].includes(token));
     }
@@ -26,9 +28,13 @@ test('education retains degree dates and overall grades after removing course sc
   }
   assert.match(sources['index.html'], /GPA 3\.51，前 30%/);
   assert.match(sources['index.html'], /统计学理学学士（均分 86\.52，前 30%）/);
+  assert.match(sources['index.html'], /2021年9月 &ndash; 2025年7月/);
+  assert.doesNotMatch(sources['index.html'], /2021年9月 &ndash; 2025年6月/);
   assert.doesNotMatch(sources['index.html'], /预计2027年7月获授学位/);
   assert.doesNotMatch(sources['assets/CV.tex'], /Jul 2027 \(expected\)/);
   assert.match(sources['assets/CV.tex'], /Sep 2025 -- Jul 2027/);
+  assert.match(sources['assets/CV.tex'], /Sep 2021 -- Jul 2025/);
+  assert.doesNotMatch(sources['assets/CV.tex'], /Sep 2021 -- Jun 2025/);
   assert.match(sources['assets/CV.tex'], /Top 30\\%/);
   for (const token of ['Master of Data Science', 'GPA 3.51/4.30', 'Average 86.52/100', 'Average 88.86/100']) {
     assert.ok(sources['assets/CV.tex'].includes(token));
