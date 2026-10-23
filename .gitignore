@@ -1,0 +1,69 @@
+.DS_Store
+*.log
+*.pyc
+__pycache__/
+
+# Public repository: deny new root files by default, then allow reviewed site files.
+/*
+!/.gitignore
+!/.nojekyll
+!/index.html
+!/zh.html
+!/main.js
+!/robots.txt
+!/sitemap.xml
+!/assets/
+
+# Never allow images by extension: transcripts and screenshots can be images too.
+/assets/*
+!/assets/apple-touch-icon.png
+!/assets/favicon.svg
+!/assets/photo.jpg
+!/assets/zh-name.woff2
+
+# All maintenance code, build instructions and documentation stay local.
+/scripts/
+/Makefile
+/README.md
+/README.en.md
+
+# Credentials and local state, including those nested under allowed directories.
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+node_modules/
+.venv/
+# Playwright MCP scratch (screenshots, previews) — never deploy
+.playwright-mcp/
+
+# Personal working notes — not part of the deployed site
+notes/
+
+# temporary files
+tmp/
+
+# Local portfolio, project evidence and historical working records — never deploy
+materials/
+# Tool caches are regenerable, not website content
+.pytest_cache/
+.benchmarks/
+.claude/
+
+# obsidian
+.obsidian
+
+# omo
+.omo
+
+# claude
+CLAUDE.md
+assets/Xiuyin_Li_Research_Assistant_Application_Academic_Deck.pdf
+
+# zh.html is a public compatibility mirror, not private working material.
+
+# codex
+.codex/
+AGENTS.md
